@@ -32,20 +32,20 @@ endforeach()
 
 file(WRITE "${DEV_GENERATED}/all_tests.c" "${ALL_TESTS_C_CONTENT}")
 
-add_executable(libxmp-tests ${DEVTEST_SRC})
+add_executable(libxmp-tests-dev ${DEVTEST_SRC})
 
 if(NOT "${CMAKE_C_COMPILER_ID}" MATCHES "^(Apple)?Clang$")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-variable")
 endif()
 
 if(LIBXMP_DISABLE_DEPACKERS)
-    target_compile_definitions(libxmp-tests PRIVATE -DLIBXMP_NO_DEPACKERS)
+    target_compile_definitions(libxmp-tests-dev PRIVATE -DLIBXMP_NO_DEPACKERS)
 endif()
 
 option(LIBXMP_TEST_DEV_NO_FORK_TEST   "Disable the forked test at development unit tests" OFF)
 if(LIBXMP_TEST_DEV_NO_FORK_TEST)
-    target_compile_definitions(libxmp-tests PRIVATE -DNO_FORK_TEST)
+    target_compile_definitions(libxmp-tests-dev PRIVATE -DNO_FORK_TEST)
 endif()
 
-target_link_libraries(libxmp-tests XMP_IF)
-add_test(NAME libxmp-tests COMMAND libxmp-tests WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}")
+target_link_libraries(libxmp-tests-dev XMP_IF)
+add_test(NAME libxmp-tests-dev COMMAND libxmp-tests-dev WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}")
