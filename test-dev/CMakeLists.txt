@@ -15,7 +15,6 @@ set(DEVTEST_SRC
 
 macro(add_devtest TESTNAME)
     list(APPEND DEVTEST_SRC ${TESTNAME})
-    message("Adding ${TESTNAME} test...")
 endmacro()
 
 set(DEV_GENERATED "${CMAKE_CURRENT_BINARY_DIR}/tests-dev-generated")
@@ -34,6 +33,10 @@ endforeach()
 file(WRITE "${DEV_GENERATED}/all_tests.c" "${ALL_TESTS_C_CONTENT}")
 
 add_executable(libxmp-tests ${DEVTEST_SRC})
+
+if(NOT "${CMAKE_C_COMPILER_ID}" MATCHES "^(Apple)?Clang$")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-variable")
+endif()
 
 if(LIBXMP_DISABLE_DEPACKERS)
     target_compile_definitions(libxmp-tests PRIVATE -DLIBXMP_NO_DEPACKERS)
