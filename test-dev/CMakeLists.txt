@@ -2,6 +2,10 @@ if(POLICY CMP0079)
     cmake_policy(SET CMP0079 NEW)
 endif()
 
+if(POLICY CMP0115)
+    cmake_policy(SET CMP0115 NEW)
+endif()
+
 include_directories(
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/src)
