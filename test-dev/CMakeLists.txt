@@ -37,6 +37,7 @@ endforeach()
 file(WRITE "${DEV_GENERATED}/all_tests.c" "${ALL_TESTS_C_CONTENT}")
 
 add_executable(libxmp-tests-dev ${DEVTEST_SRC})
+set_property(TARGET libxmp-tests-dev PROPERTY C_STANDARD 99)
 
 if(NOT "${CMAKE_C_COMPILER_ID}" MATCHES "^(Apple)?Clang$")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-variable")

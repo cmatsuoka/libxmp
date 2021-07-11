@@ -8,6 +8,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/src)
 
 add_executable(libxmp-test test.c)
+set_property(TARGET libxmp-test PROPERTY C_STANDARD 99)
 
 if(LIBXMP_DISABLE_DEPACKERS)
     target_compile_definitions(libxmp-test PRIVATE -DLIBXMP_NO_DEPACKERS)
