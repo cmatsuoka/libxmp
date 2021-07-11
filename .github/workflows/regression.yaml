@@ -184,7 +184,7 @@ jobs:
       - name: Build
         run: |
           source ../emsdk/emsdk_env.sh
-          emcmake cmake --build build --target all
+          cmake --build build --target all
       - name: Run check
         run: |
           source ../emsdk/emsdk_env.sh
@@ -223,9 +223,6 @@ jobs:
       - name: Build
         run: |
           cmake --build build --target all
-      - name: Run check
-        run: |
-          make check
       - name: Run checks
         run: |
           cd build
@@ -320,7 +317,7 @@ jobs:
         with:
           msystem: ${{ matrix.installs }}
           update: true
-          install: base-devel git autoconf ${{ matrix.pkg }}
+          install: base-devel git autoconf cmake ${{ matrix.pkg }}
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Create and run configure script
