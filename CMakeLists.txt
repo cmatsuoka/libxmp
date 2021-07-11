@@ -110,8 +110,14 @@ if(POLICY CMP0077) # Cache variables override since 3.12
     cmake_policy(SET CMP0077 NEW)
 endif()
 
+if(EMSCRIPTEN)
+    set(BUILD_SHARED_DEFAULT OFF)
+else()
+    set(BUILD_SHARED_DEFAULT ON)
+endif()
+
 option(BUILD_STATIC   "Build static library of libXMP" ON)
-option(BUILD_SHARED   "Build shared library of libXMP" ON)
+option(BUILD_SHARED   "Build shared library of libXMP" ${BUILD_SHARED_DEFAULT})
 if(NOT BUILD_STATIC AND NOT BUILD_SHARED)
     message(FATAL_ERROR "Both static and shared builds got disabled. You must enable at least one of them.")
 endif()
