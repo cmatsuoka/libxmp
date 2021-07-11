@@ -526,13 +526,14 @@ if(XMP_WITH_DEMO_PLAYER_SDL1)
     if(WIN32)
         target_compile_definitions(xmpsdl PRIVATE -DSDL_MAIN_HANDLED)
     endif()
+    target_include_directories(xmpsdl PRIVATE ${SDL_INCLUDE_DIR})
     target_link_libraries(xmpsdl XMP_IF ${SDL_LIBRARY})
 endif()
 
 option(XMP_WITH_DEMO_PLAYER_SDL2      "Build also demo player for XMP (SDL2 needed)" OFF)
 if(XMP_WITH_DEMO_PLAYER)
     add_executable(xmpsdl2
-        examples/player-sdl2.c
+        examples/player-sdl.c
     )
     add_dependencies(xmpsdl2 XMP_IF)
 
@@ -545,6 +546,7 @@ if(XMP_WITH_DEMO_PLAYER)
     if(WIN32)
         target_compile_definitions(xmpsdl2 PRIVATE -DSDL_MAIN_HANDLED)
     endif()
+    target_include_directories(xmpsdl2 PRIVATE ${SDL2_INCLUDE_DIRS})
     target_link_libraries(xmpsdl2 XMP_IF ${SDL2_LIBRARIES})
 endif()
 
