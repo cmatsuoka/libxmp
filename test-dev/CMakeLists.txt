@@ -39,5 +39,10 @@ if(LIBXMP_DISABLE_DEPACKERS)
     target_compile_definitions(libxmp-tests PRIVATE -DLIBXMP_NO_DEPACKERS)
 endif()
 
+option(LIBXMP_TEST_DEV_NO_FORK_TEST   "Disable the forked test at development unit tests" OFF)
+if(LIBXMP_TEST_DEV_NO_FORK_TEST)
+    target_compile_definitions(libxmp-tests PRIVATE -DNO_FORK_TEST)
+endif()
+
 target_link_libraries(libxmp-tests XMP_IF)
 add_test(NAME libxmp-tests COMMAND libxmp-tests WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}")
