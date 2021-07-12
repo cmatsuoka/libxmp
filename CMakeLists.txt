@@ -78,7 +78,10 @@ endif()
 
 # -fPIC thing
 if(NOT WIN32)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+    option(LIBXMP_PIC   "Build library as the position-independent code" OFF)
+    if(LIBXMP_PIC)
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+    endif()
 endif()
 
 # Prevent shared libraries has "lib" prefix on Windows DLL files
