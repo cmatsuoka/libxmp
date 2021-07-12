@@ -93,7 +93,7 @@ typedef signed long long int64;
 #define TRACK_NUM(a,c)	m->mod.xxp[a]->index[c]
 #define EVENT(a,c,r)	m->mod.xxt[TRACK_NUM((a),(c))]->event[r]
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(__MINGW32__)
 #define D_CRIT "  Error: "
 #define D_WARN "Warning: "
 #define D_INFO "   Info: "
