@@ -17,10 +17,6 @@ set(DEVTEST_SRC
     compare_mixer_data.c
 )
 
-macro(add_devtest TESTNAME)
-    list(APPEND DEVTEST_SRC ${TESTNAME})
-endmacro()
-
 set(DEV_GENERATED "${CMAKE_CURRENT_BINARY_DIR}/tests-dev-generated")
 file(MAKE_DIRECTORY "${DEV_GENERATED}")
 include_directories("${DEV_GENERATED}")
@@ -30,7 +26,7 @@ file(STRINGS "all_tests.txt" ALL_DEV_TESTS)
 set(ALL_TESTS_C_CONTENT)
 
 foreach(DEVTEST ${ALL_DEV_TESTS})
-    add_devtest(${DEVTEST})
+    list(APPEND DEVTEST_SRC ${DEVTEST}.c)
     set(ALL_TESTS_C_CONTENT "${ALL_TESTS_C_CONTENT}\ndeclare_test(${DEVTEST});")
 endforeach()
 
