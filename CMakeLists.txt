@@ -3,6 +3,7 @@ project(libxmp VERSION 4.5.0 LANGUAGES C)
 
 include(CheckSymbolExists)
 include(CheckFunctionExists)
+include(CheckIncludeFile)
 include(TestBigEndian)
 
 # -----------------------------------
@@ -126,14 +127,14 @@ if(CMAKE_BUILD_TYPE_LOWER STREQUAL "debug")
     add_definitions(-DDEBUG -D_DEBUG -DDEBUG_NOCOLOR)
 endif()
 
-check_symbol_exists(round "math.h;tgmath.h" HAVE_ROUND_FUNCTION)
-if(HAVE_ROUND_FUNCTION)
-    add_definitions(-DHAVE_ROUND=1)
+check_include_file(unistd.h HAVE_UNISTD_H)
+if(HAVE_UNISTD_H)
+    add_definitions(-DHAVE_UNISTD_H=1)
 endif()
 
-check_symbol_exists(powf "math.h;tgmath.h" HAVE_POWF_FUNCTION)
-if(HAVE_POWF_FUNCTION)
-    add_definitions(-DHAVE_POWF=1)
+check_include_file(dirent.h HAVE_DIRENT)
+if(HAVE_DIRENT)
+    add_definitions(-DHAVE_DIRENT=1)
 endif()
 
 if("${CMAKE_C_COMPILER_ID}" MATCHES "^(Apple)?Clang$")
