@@ -127,9 +127,64 @@ if(CMAKE_BUILD_TYPE_LOWER STREQUAL "debug")
     add_definitions(-DDEBUG -D_DEBUG -DDEBUG_NOCOLOR)
 endif()
 
-check_include_file(unistd.h HAVE_UNISTD_H)
-if(HAVE_UNISTD_H)
-    add_definitions(-DHAVE_UNISTD_H=1)
+check_include_file(alloca.h HAVE_ALLOCA_H)
+if(HAVE_ALLOCA_H)
+    add_definitions(-DHAVE_ALLOCA_H=1)
+endif()
+
+check_symbol_exists(round "math.h;tgmath.h" HAVE_ROUND_FUNCTION)
+if(HAVE_ROUND_FUNCTION)
+    add_definitions(-DHAVE_ROUND=1)
+endif()
+
+check_symbol_exists(powf "math.h;tgmath.h" HAVE_POWF_FUNCTION)
+if(HAVE_POWF_FUNCTION)
+    add_definitions(-DHAVE_POWF=1)
+endif()
+
+check_symbol_exists(popen "stdio.h" HAVE_POPEN)
+if(HAVE_POPEN)
+    add_definitions(-DHAVE_POPEN=1)
+endif()
+
+check_symbol_exists(fnmatch "fnmatch.h" HAVE_FNMATCH)
+if(HAVE_FNMATCH)
+    add_definitions(-DHAVE_FNMATCH=1)
+endif()
+
+check_symbol_exists(umask "sys/stat.h" HAVE_UMASK)
+if(HAVE_UMASK)
+    add_definitions(-DHAVE_UMASK=1)
+endif()
+
+check_symbol_exists(wait "sys/wait.h" HAVE_WAIT)
+if(HAVE_WAIT)
+    add_definitions(-DHAVE_WAIT=1)
+endif()
+
+check_symbol_exists(pipe "unistd.h" HAVE_PIPE)
+if(HAVE_PIPE)
+    add_definitions(-DHAVE_PIPE=1)
+endif()
+
+check_symbol_exists(fork "unistd.h" HAVE_FORK)
+if(HAVE_FORK)
+    add_definitions(-DHAVE_FORK=1)
+endif()
+
+check_symbol_exists(execvp "unistd.h" HAVE_EXECVP)
+if(HAVE_EXECVP)
+    add_definitions(-DHAVE_EXECVP=1)
+endif()
+
+check_symbol_exists(dup2 "unistd.h" HAVE_DUP2)
+if(HAVE_DUP2)
+    add_definitions(-DHAVE_DUP2=1)
+endif()
+
+check_symbol_exists(mkstemp "stdlib.h" HAVE_MKSTEMP)
+if(HAVE_MKSTEMP)
+    add_definitions(-DHAVE_MKSTEMP=1)
 endif()
 
 check_include_file(dirent.h HAVE_DIRENT)
