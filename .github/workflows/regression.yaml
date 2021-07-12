@@ -227,6 +227,18 @@ jobs:
         run: |
           cd build
           ctest --output-on-failure
+          
+  macos-cmake-m1:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Run CMake script
+        run: |
+          cmake . -DCMAKE_OSX_ARCHITECTURES="arm64" -DCMAKE_BUILD_TYPE=Debug -DWITH_UNIT_TESTS=OFF -B build
+      - name: Build
+        run: |
+          cmake --build build --target all
 
   windows-vc:
     strategy:
