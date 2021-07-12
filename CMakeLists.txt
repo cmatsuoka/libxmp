@@ -137,6 +137,16 @@ if(HAVE_DIRENT)
     add_definitions(-DHAVE_DIRENT=1)
 endif()
 
+if(UNIX AND NOT APPLE AND NOT HAIKU AND NOT EMSCRIPTEN)
+    find_library(M_LIBRARY m)
+    if(M_LIBRARY) # No need to link it by an absolute path
+        set(M_LIBRARY m)
+    endif()
+    mark_as_advanced(M_LIBRARY)
+else()
+    set(M_LIBRARY "")
+endif()
+
 if("${CMAKE_C_COMPILER_ID}" MATCHES "^(Apple)?Clang$")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-shift-negative-value")
 endif()
@@ -393,6 +403,10 @@ if(LIBXMP_BUILD_FULL AND BUILD_STATIC)
 
     if(MSVC) # WORKAROUND for MSVC
         target_include_directories(xmp_static PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/win32)
+    endif()
+
+    if(NOT MSVC AND M_LIBRARY)
+        target_link_libraries(xmp_static PUBLIC ${M_LIBRARY})
     endif()
 endif()
 

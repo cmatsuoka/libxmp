@@ -15,6 +15,7 @@ set(DEVTEST_SRC
     main.c
     simple_module.c
     compare_mixer_data.c
+    ../src/md5.c
 )
 
 set(DEV_GENERATED "${CMAKE_CURRENT_BINARY_DIR}/tests-dev-generated")
