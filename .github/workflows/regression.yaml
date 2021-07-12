@@ -271,11 +271,11 @@ jobs:
           cmd.exe /C "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" ${{ matrix.targetplatform }} "&&" cmake . -DCMAKE_BUILD_TYPE=Debug -DWITH_UNIT_TESTS=ON -B build
       - name: Build
         run: |
-          cmake --build build --target ALL_BUILD
+          cmake --build build --config Debug --target ALL_BUILD
       - name: Run checks
         run: |
           cd build
-          ctest --output-on-failure
+          ctest -C Debug --output-on-failure
 
   windows-msys2:
     runs-on: windows-latest
