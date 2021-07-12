@@ -350,7 +350,7 @@ if(WIN32)
         src/win32.c
         src/win32/ptpopen.c
     )
-    if(CMAKE_BUILD_TYPE_LOWER STREQUAL "debug")
+    if(MSVC AND CMAKE_BUILD_TYPE_LOWER STREQUAL "debug")
         list(APPEND LIBXMP_SRC_COMMON
             src/win32/debug.c
         )
