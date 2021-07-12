@@ -16,7 +16,29 @@ set(DEVTEST_SRC
     simple_module.c
     compare_mixer_data.c
     ../src/md5.c
+    ../src/hio.c
+    ../src/load_helpers.c
+    ../src/period.c
+    ../src/memio.c
+    ../src/dataio.c
+    ../src/scan.c
+    ../src/loaders/itsex.c
+    ../src/loaders/sample.c
+    ../src/loaders/common.c
+    ../src/depackers/xfnmatch.c
 )
+
+if(WIN32)
+    list(APPEND DEVTEST_SRC
+        ../src/win32.c
+        ../src/win32/ptpopen.c
+    )
+    if(CMAKE_BUILD_TYPE_LOWER STREQUAL "debug")
+        list(APPEND DEVTEST_SRC
+            ../src/win32/debug.c
+        )
+    endif()
+endif()
 
 set(DEV_GENERATED "${CMAKE_CURRENT_BINARY_DIR}/tests-dev-generated")
 file(MAKE_DIRECTORY "${DEV_GENERATED}")
@@ -35,6 +57,9 @@ file(WRITE "${DEV_GENERATED}/all_tests.c" "${ALL_TESTS_C_CONTENT}")
 
 add_executable(libxmp-tests-dev ${DEVTEST_SRC})
 set_property(TARGET libxmp-tests-dev PROPERTY C_STANDARD 99)
+if(WIN32) # Make sure unit test will find its DLLs while running
+    set_property(TARGET libxmp-tests-dev PROPERTY RUNTIME_OUTPUT_DIRECTORY ${libxmp_BINARY_DIR})
+endif()
 
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-variable")
