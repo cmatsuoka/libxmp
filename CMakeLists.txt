@@ -454,7 +454,7 @@ if(LIBXMP_BUILD_FULL AND BUILD_STATIC)
     endif()
 
     if(LIBXMP_PIC)
-        target_compile_options(xmp_lite PRIVATE -fPIC)
+        target_compile_options(xmp_static PRIVATE -fPIC)
     endif()
 
     target_include_directories(xmp_static PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
