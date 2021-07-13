@@ -7,6 +7,15 @@ include(CheckIncludeFile)
 include(TestBigEndian)
 
 # -----------------------------------
+if(POLICY CMP0075) # Include file check macros honor CMAKE_REQUIRED_LIBRARIES, CMake >= 3.12
+    cmake_policy(SET CMP0075 NEW)
+endif()
+
+if(POLICY CMP0077) # Cache variables override since 3.12
+    cmake_policy(SET CMP0077 NEW)
+endif()
+
+
 # If platform is Emscripten
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Emscripten")
     set(EMSCRIPTEN 1)
@@ -69,7 +78,7 @@ if(MSVC)
     endif()
 elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     # Update if necessary
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 endif()
 
 # Disable bogus MSVC warnings
@@ -79,22 +88,9 @@ endif()
 
 # -fPIC thing
 if(NOT WIN32)
-    option(LIBXMP_PIC   "Build library as the position-independent code" OFF)
-    if(LIBXMP_PIC)
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
-    endif()
-endif()
-
-# Prevent shared libraries has "lib" prefix on Windows DLL files
-if(WIN32)
-    set(CMAKE_SHARED_LIBRARY_PREFIX "")
+    option(LIBXMP_PIC   "Build the static library as the position-independent" OFF)
 endif()
 # -----------------------------------
-
-
-if(POLICY CMP0077) # Cache variables override since 3.12
-    cmake_policy(SET CMP0077 NEW)
-endif()
 
 if(EMSCRIPTEN)
     set(BUILD_SHARED_DEFAULT OFF)
@@ -132,12 +128,7 @@ if(HAVE_ALLOCA_H)
     add_definitions(-DHAVE_ALLOCA_H=1)
 endif()
 
-check_symbol_exists(round "math.h;tgmath.h" HAVE_ROUND_FUNCTION)
-if(HAVE_ROUND_FUNCTION)
-    add_definitions(-DHAVE_ROUND=1)
-endif()
-
-check_symbol_exists(powf "math.h;tgmath.h" HAVE_POWF_FUNCTION)
+check_symbol_exists(powf "math.h" HAVE_POWF_FUNCTION)
 if(HAVE_POWF_FUNCTION)
     add_definitions(-DHAVE_POWF=1)
 endif()
@@ -187,19 +178,19 @@ if(HAVE_MKSTEMP)
     add_definitions(-DHAVE_MKSTEMP=1)
 endif()
 
-check_include_file(dirent.h HAVE_DIRENT)
+check_symbol_exists(opendir "dirent.h" HAVE_DIRENT)
 if(HAVE_DIRENT)
     add_definitions(-DHAVE_DIRENT=1)
 endif()
 
-if(UNIX AND NOT APPLE AND NOT HAIKU AND NOT EMSCRIPTEN)
-    find_library(M_LIBRARY m)
-    if(M_LIBRARY) # No need to link it by an absolute path
-        set(M_LIBRARY m)
+if(UNIX AND NOT (WIN32 OR APPLE OR HAIKU OR EMSCRIPTEN OR BEOS))
+    find_library(LIBM_LIBRARY m)
+    if(LIBM_LIBRARY) # No need to link it by an absolute path
+        set(LIBM_REQUIRED 1)
+        set(LIBM_LIBRARY m)
+        list(APPEND CMAKE_REQUIRED_LIBRARIES m)
     endif()
-    mark_as_advanced(M_LIBRARY)
-else()
-    set(M_LIBRARY "")
+    mark_as_advanced(LIBM_LIBRARY)
 endif()
 
 if("${CMAKE_C_COMPILER_ID}" MATCHES "^(Apple)?Clang$")
@@ -213,7 +204,6 @@ else()
     if(NOT "${CMAKE_C_COMPILER_ID}" MATCHES "^(Apple)?Clang$")
         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-but-set-variable -Wno-stringop-truncation")
     endif()
-    string(REGEX REPLACE "-pedantic" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 endif()
 
 
@@ -315,7 +305,6 @@ set(LIBXMP_SRC_LIST_FULL
     src/loaders/ult_load.c
     src/loaders/umx_load.c
     src/loaders/voltable.c
-    src/lutgen.c
     src/md5.c
     src/med_extras.c
     src/mix_paula.c
@@ -439,7 +428,7 @@ set(XMP_INSTALLS)
 if(LIBXMP_BUILD_FULL AND BUILD_STATIC)
     add_library(xmp_static STATIC ${LIBXMP_SRC_FULL})
     list(APPEND XMP_INSTALLS xmp_static)
-    set_target_properties(xmp_static PROPERTIES OUTPUT_NAME xmp C_STANDARD 99)
+    set_target_properties(xmp_static PROPERTIES OUTPUT_NAME xmp C_STANDARD 90)
 
     if(WIN32 AND BUILD_SHARED)
         set_target_properties(xmp_static PROPERTIES OUTPUT_NAME xmp-static)
@@ -450,25 +439,25 @@ if(LIBXMP_BUILD_FULL AND BUILD_STATIC)
     target_compile_definitions(xmp_static PRIVATE ${LIBXMP_DEFINES} -DBUILDING_STATIC)
 
     if(MSVC)
-        target_compile_definitions(xmp_static PRIVATE -DPATH_MAX=260 -DCLIB_DECL=__stdcall)
+        target_compile_definitions(xmp_static PRIVATE -DPATH_MAX=260)
+    endif()
+
+    if(LIBXMP_PIC)
+        target_compile_options(xmp_lite PRIVATE -fPIC)
     endif()
 
     target_include_directories(xmp_static PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
     target_include_directories(xmp_static PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-    if(MSVC) # WORKAROUND for MSVC
-        target_include_directories(xmp_static PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/win32)
-    endif()
-
-    if(NOT MSVC AND M_LIBRARY)
-        target_link_libraries(xmp_static PUBLIC ${M_LIBRARY})
+    if(LIBM_REQUIRED)
+        target_link_libraries(xmp_static PUBLIC ${LIBM_LIBRARY})
     endif()
 endif()
 
 if(LIBXMP_BUILD_FULL AND BUILD_SHARED)
     add_library(xmp_shared SHARED ${LIBXMP_SRC_FULL})
     list(APPEND XMP_INSTALLS xmp_shared)
-    set_target_properties(xmp_shared PROPERTIES OUTPUT_NAME xmp C_STANDARD 99)
+    set_target_properties(xmp_shared PROPERTIES OUTPUT_NAME xmp C_STANDARD 90)
 
     if(NOT MSVC)
         target_link_libraries(xmp_shared PUBLIC m)
@@ -477,15 +466,11 @@ if(LIBXMP_BUILD_FULL AND BUILD_SHARED)
     target_compile_definitions(xmp_shared PRIVATE ${LIBXMP_DEFINES} -DBUILDING_DLL)
 
     if(MSVC)
-        target_compile_definitions(xmp_shared PRIVATE -DPATH_MAX=260 -DCLIB_DECL=__stdcall)
+        target_compile_definitions(xmp_shared PRIVATE -DPATH_MAX=260)
     endif()
 
     target_include_directories(xmp_shared PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
     target_include_directories(xmp_shared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-
-    if(MSVC) # WORKAROUND for MSVC
-        target_include_directories(xmp_shared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include_msvc)
-    endif()
 
     set_target_properties(xmp_shared PROPERTIES VERSION ${libxmp_VERSION} SOVERSION ${libxmp_VERSION_MAJOR})
 endif()
@@ -512,7 +497,11 @@ if(LIBXMP_BUILD_LITE AND BUILD_STATIC)
     target_compile_definitions(xmp_lite_static PRIVATE ${LIBXMP_DEFINES} ${LIBXMP_LITE_DEFINES} -DBUILDING_STATIC)
 
     if(MSVC)
-        target_compile_definitions(xmp_lite_static PRIVATE -DPATH_MAX=260 -DCLIB_DECL=__stdcall)
+        target_compile_definitions(xmp_lite_static PRIVATE -DPATH_MAX=260)
+    endif()
+
+    if(LIBXMP_PIC)
+        target_compile_options(xmp_lite_static PRIVATE -fPIC)
     endif()
 
     target_include_directories(xmp_lite_static PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -520,10 +509,6 @@ if(LIBXMP_BUILD_LITE AND BUILD_STATIC)
         ${CMAKE_CURRENT_SOURCE_DIR}/src
         ${CMAKE_CURRENT_SOURCE_DIR}/src/loaders
     )
-
-    if(MSVC) # WORKAROUND for MSVC
-        target_include_directories(xmp_lite_static PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include_msvc)
-    endif()
 endif()
 
 if(LIBXMP_BUILD_LITE AND BUILD_SHARED)
@@ -538,7 +523,7 @@ if(LIBXMP_BUILD_LITE AND BUILD_SHARED)
     target_compile_definitions(xmp_lite_shared PRIVATE ${LIBXMP_DEFINES} ${LIBXMP_LITE_DEFINES} -DBUILDING_DLL)
 
     if(MSVC)
-        target_compile_definitions(xmp_lite_shared PRIVATE -DPATH_MAX=260 -DCLIB_DECL=__stdcall)
+        target_compile_definitions(xmp_lite_shared PRIVATE -DPATH_MAX=260)
     endif()
 
     target_include_directories(xmp_lite_shared PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -546,10 +531,6 @@ if(LIBXMP_BUILD_LITE AND BUILD_SHARED)
         ${CMAKE_CURRENT_SOURCE_DIR}/src
         ${CMAKE_CURRENT_SOURCE_DIR}/src/loaders
     )
-
-    if(MSVC) # WORKAROUND for MSVC
-        target_include_directories(xmp_lite_shared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include_msvc)
-    endif()
 
     set_target_properties(xmp_lite_shared PROPERTIES VERSION ${libxmp_VERSION} SOVERSION ${libxmp_VERSION_MAJOR})
 endif()

@@ -56,7 +56,7 @@ endforeach()
 file(WRITE "${DEV_GENERATED}/all_tests.c" "${ALL_TESTS_C_CONTENT}")
 
 add_executable(libxmp-tests-dev ${DEVTEST_SRC})
-set_property(TARGET libxmp-tests-dev PROPERTY C_STANDARD 99)
+set_property(TARGET libxmp-tests-dev PROPERTY C_STANDARD 90)
 if(WIN32) # Make sure unit test will find its DLLs while running
     set_property(TARGET libxmp-tests-dev PROPERTY RUNTIME_OUTPUT_DIRECTORY ${libxmp_BINARY_DIR})
 endif()
