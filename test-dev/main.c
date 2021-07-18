@@ -1,5 +1,8 @@
 #ifdef WIN32
 #include <process.h> /* _spawnl, _P_WAIT */
+#ifdef _MSC_VER
+#include <crtdbg.h>
+#endif
 #elif !defined(__riscos__) && !defined(NO_FORK_TEST)
 #define FORK_TEST
 #endif
@@ -133,6 +136,13 @@ int run_test(int num)
 
 int main(int argc, char **argv)
 {
+#ifdef _MSC_VER
+	if (!IsDebuggerPresent()) {
+		_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG);
+		_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
+	}
+#endif
+
 #define declare_test(x) add_test(x)
 #include "all_tests.c"
 #undef declare_test
