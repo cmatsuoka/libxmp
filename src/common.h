@@ -15,6 +15,14 @@
 #define LIBXMP_EXPORT_VAR
 #endif
 
+#ifndef __cplusplus
+#define LIBXMP_BEGIN_DECLS
+#define LIBXMP_END_DECLS
+#else
+#define LIBXMP_BEGIN_DECLS	extern "C" {
+#define LIBXMP_END_DECLS	}
+#endif
+
 #if defined(__MORPHOS__) || defined(__AROS__) || defined(AMIGAOS) || \
     defined(__amigaos__) || defined(__amigaos4__) ||defined(__amigados__) || \
     defined(AMIGA) || defined(_AMIGA) || defined(__AMIGA__)
@@ -106,11 +114,12 @@ typedef signed long long int64;
 #endif
 void CLIB_DECL D_(const char *text, ...) ATTR_PRINTF(1,2);
 #else
-// VS prior to VC7.1 does not support variadic macros. VC8.0 does not optimize unused parameters passing
+/* VS prior to VC7.1 does not support variadic macros.
+ * VC8.0 does not optimize unused parameters passing. */
 #if _MSC_VER < 1400
 void __inline CLIB_DECL D_(const char *text, ...) { do {} while (0); }
 #else
-#define D_(args, ...) do {} while (0)
+#define D_(...) do {} while (0)
 #endif
 #endif
 
@@ -121,21 +130,8 @@ void __inline CLIB_DECL D_(const char *text, ...) { do {} while (0); }
 #define D_CRIT "  Error: "
 #define D_WARN "Warning: "
 #define D_INFO "   Info: "
-#define D_(args...) do { \
-	__android_log_print(ANDROID_LOG_DEBUG, "libxmp", args); \
-	} while (0)
-#else
-#define D_(args...) do {} while (0)
-#endif
-
-#elif defined(__WATCOMC__)
-#ifdef DEBUG
-#define D_INFO "\x1b[33m"
-#define D_CRIT "\x1b[31m"
-#define D_WARN "\x1b[36m"
 #define D_(...) do { \
-	printf("\x1b[33m%s \x1b[37m[%s:%d] " D_INFO, __FUNCTION__, \
-		__FILE__, __LINE__); printf (__VA_ARGS__); printf ("\x1b[0m\n"); \
+	__android_log_print(ANDROID_LOG_DEBUG, "libxmp", __VA_ARGS__); \
 	} while (0)
 #else
 #define D_(...) do {} while (0)
@@ -147,12 +143,12 @@ void __inline CLIB_DECL D_(const char *text, ...) { do {} while (0); }
 #define D_INFO "\x1b[33m"
 #define D_CRIT "\x1b[31m"
 #define D_WARN "\x1b[36m"
-#define D_(args...) do { \
+#define D_(...) do { \
 	printf("\x1b[33m%s \x1b[37m[%s:%d] " D_INFO, __FUNCTION__, \
-		__FILE__, __LINE__); printf (args); printf ("\x1b[0m\n"); \
+		__FILE__, __LINE__); printf (__VA_ARGS__); printf ("\x1b[0m\n"); \
 	} while (0)
 #else
-#define D_(args...) do {} while (0)
+#define D_(...) do {} while (0)
 #endif
 
 #endif	/* !_MSC_VER */
@@ -270,7 +266,6 @@ struct ord_data {
 	int st26_speed;
 #endif
 };
-
 
 
 /* Context */
