@@ -65,9 +65,8 @@ endif()
 
 string(TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_LOWER)
 
-if(CMAKE_BUILD_TYPE_LOWER STREQUAL "release")
-    add_definitions(-DNDEBUG)
-endif()
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -DNDEBUG")
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG -D_DEBUG")
 
 if(MSVC)
     # Force to always compile with W4
@@ -117,10 +116,6 @@ option(LIBXMP_DISABLE_PROWIZARD     "Disable the ProWizard at libXMP" OFF)
 TEST_BIG_ENDIAN(WORDS_BIGENDIAN)
 if(WORDS_BIGENDIAN)
     add_definitions(-DWORDS_BIGENDIAN=1)
-endif()
-
-if(CMAKE_BUILD_TYPE_LOWER STREQUAL "debug")
-    add_definitions(-DDEBUG -D_DEBUG -DDEBUG_NOCOLOR)
 endif()
 
 check_include_file(alloca.h HAVE_ALLOCA_H)
@@ -405,11 +400,6 @@ if(WIN32)
         src/win32.c
         src/win32/ptpopen.c
     )
-    if(MSVC AND CMAKE_BUILD_TYPE_LOWER STREQUAL "debug")
-        list(APPEND LIBXMP_SRC_COMMON
-            src/win32/debug.c
-        )
-    endif()
 endif()
 
 set(LIBXMP_DEFINES)
