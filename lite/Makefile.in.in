@@ -27,6 +27,7 @@ SHELL		= /bin/sh
 
 DIST		= libxmp-lite-$(VERSION)
 DFILES		= README INSTALL Changelog install-sh configure configure.ac \
+		  CMakeLists.txt build_pros.cmake build_src.cmake \
 		  config.sub config.guess Makefile.in libxmp-lite.pc.in \
 		  Makefile.vc Makefile.os2 Makefile.w32 watcom.mif libxmp.map
 DDIRS		= include src loaders test

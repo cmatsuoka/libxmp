@@ -30,6 +30,7 @@ SHELL		= /bin/sh
 
 DIST		= libxmp-$(VERSION)
 DFILES		= README INSTALL install-sh configure configure.ac config.sub \
+		  CMakeLists.txt build_pros.cmake build_src.cmake \
 		  config.guess Makefile.in libxmp.pc.in libxmp.map Makefile.vc \
 		  Makefile.os2 Makefile.w32 watcom.mif
 DDIRS		= docs include src loaders prowiz depackers win32 test
