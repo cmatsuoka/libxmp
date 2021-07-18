@@ -1,6 +1,7 @@
 #ifdef WIN32
 #include <process.h> /* _spawnl, _P_WAIT */
 #ifdef _MSC_VER
+#include <debugapi.h>
 #include <crtdbg.h>
 #endif
 #elif !defined(__riscos__) && !defined(NO_FORK_TEST)

@@ -69,9 +69,5 @@ if(LIBXMP_TEST_DEV_NO_FORK_TEST)
     target_compile_definitions(libxmp-tests-dev PRIVATE -DNO_FORK_TEST)
 endif()
 
-if(MSVC)
-	target_link_libraries(libxmp-tests-dev kernel32)
-endif()
-
 target_link_libraries(libxmp-tests-dev XMP_IF)
 add_test(NAME libxmp-tests-dev COMMAND libxmp-tests-dev WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}")
