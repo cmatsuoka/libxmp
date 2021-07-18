@@ -33,11 +33,6 @@ if(WIN32)
         ../src/win32.c
         ../src/win32/ptpopen.c
     )
-    if(CMAKE_BUILD_TYPE_LOWER STREQUAL "debug")
-        list(APPEND DEVTEST_SRC
-            ../src/win32/debug.c
-        )
-    endif()
 endif()
 
 set(DEV_GENERATED "${CMAKE_CURRENT_BINARY_DIR}/tests-dev-generated")
@@ -72,6 +67,10 @@ endif()
 option(LIBXMP_TEST_DEV_NO_FORK_TEST   "Disable the forked test at development unit tests" OFF)
 if(LIBXMP_TEST_DEV_NO_FORK_TEST)
     target_compile_definitions(libxmp-tests-dev PRIVATE -DNO_FORK_TEST)
+endif()
+
+if(MSVC)
+	target_link_libraries(libxmp-tests-dev kernel32)
 endif()
 
 target_link_libraries(libxmp-tests-dev XMP_IF)
