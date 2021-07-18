@@ -433,6 +433,10 @@ endif()
 list(APPEND LIBXMP_SRC_LITE ${LIBXMP_SRC_LIST_LITE} ${LIBXMP_SRC_LIST_LITE_ONLY} ${LIBXMP_SRC_COMMON})
 list(APPEND LIBXMP_SRC_FULL ${LIBXMP_SRC_LIST_LITE} ${LIBXMP_SRC_LIST_FULL_ONLY} ${LIBXMP_SRC_LIST_FULL} ${LIBXMP_SRC_COMMON})
 
+if(MSVC)
+	list(APPEND LIBXMP_DEFINES -DDinline=__inline -D_USE_MATH_DEFINES -DPATH_MAX=260)
+endif()
+
 set(XMP_INSTALLS)
 
 # ============= FULL =============
@@ -448,10 +452,6 @@ if(LIBXMP_BUILD_FULL AND BUILD_STATIC)
     endif()
 
     target_compile_definitions(xmp_static PRIVATE ${LIBXMP_DEFINES} -DBUILDING_STATIC)
-
-    if(MSVC)
-        target_compile_definitions(xmp_static PRIVATE -DPATH_MAX=260)
-    endif()
 
     if(LIBXMP_PIC)
         target_compile_options(xmp_static PRIVATE -fPIC)
@@ -475,10 +475,6 @@ if(LIBXMP_BUILD_FULL AND BUILD_SHARED)
     endif()
 
     target_compile_definitions(xmp_shared PRIVATE ${LIBXMP_DEFINES} -DBUILDING_DLL)
-
-    if(MSVC)
-        target_compile_definitions(xmp_shared PRIVATE -DPATH_MAX=260)
-    endif()
 
     target_include_directories(xmp_shared PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
     target_include_directories(xmp_shared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -507,10 +503,6 @@ if(LIBXMP_BUILD_LITE AND BUILD_STATIC)
 
     target_compile_definitions(xmp_lite_static PRIVATE ${LIBXMP_DEFINES} ${LIBXMP_LITE_DEFINES} -DBUILDING_STATIC)
 
-    if(MSVC)
-        target_compile_definitions(xmp_lite_static PRIVATE -DPATH_MAX=260)
-    endif()
-
     if(LIBXMP_PIC)
         target_compile_options(xmp_lite_static PRIVATE -fPIC)
     endif()
@@ -532,10 +524,6 @@ if(LIBXMP_BUILD_LITE AND BUILD_SHARED)
     endif()
 
     target_compile_definitions(xmp_lite_shared PRIVATE ${LIBXMP_DEFINES} ${LIBXMP_LITE_DEFINES} -DBUILDING_DLL)
-
-    if(MSVC)
-        target_compile_definitions(xmp_lite_shared PRIVATE -DPATH_MAX=260)
-    endif()
 
     target_include_directories(xmp_lite_shared PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
     target_include_directories(xmp_lite_shared PRIVATE
