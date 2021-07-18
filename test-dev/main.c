@@ -1,6 +1,7 @@
 #ifdef WIN32
 #include <process.h> /* _spawnl, _P_WAIT */
 #ifdef _MSC_VER
+#include <windows.h>
 #include <debugapi.h>
 #include <crtdbg.h>
 #endif
