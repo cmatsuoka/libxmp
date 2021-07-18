@@ -13,10 +13,6 @@ if(WIN32) # Make sure unit test will find its DLLs while running
     set_property(TARGET libxmp-test PROPERTY RUNTIME_OUTPUT_DIRECTORY ${libxmp_BINARY_DIR})
 endif()
 
-if(LIBXMP_DISABLE_DEPACKERS)
-    target_compile_definitions(libxmp-test PRIVATE -DLIBXMP_NO_DEPACKERS)
-endif()
-
 target_link_libraries(libxmp-test XMP_IF)
 
 add_test(NAME libxmp-test COMMAND libxmp-test WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}")

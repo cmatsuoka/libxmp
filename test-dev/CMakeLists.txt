@@ -60,10 +60,6 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-variable")
 endif()
 
-if(LIBXMP_DISABLE_DEPACKERS)
-    target_compile_definitions(libxmp-tests-dev PRIVATE -DLIBXMP_NO_DEPACKERS)
-endif()
-
 option(LIBXMP_TEST_DEV_NO_FORK_TEST   "Disable the forked test at development unit tests" OFF)
 if(LIBXMP_TEST_DEV_NO_FORK_TEST)
     target_compile_definitions(libxmp-tests-dev PRIVATE -DNO_FORK_TEST)

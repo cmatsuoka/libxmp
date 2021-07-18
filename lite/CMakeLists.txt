@@ -29,26 +29,29 @@ include(build_src.cmake)
 
 
 set(LIBXMP_DEFINES)
+set(LIBXMP_DEFINES_PUBLIC)
 
-if(LIBXMP_DISABLE_IT)
-    list(APPEND LIBXMP_DEFINES -DLIBXMP_CORE_DISABLE_IT)
-endif()
-
-list(APPEND LIBXMP_SRC_LITE ${LIBXMP_SRC_LIST_LITE} ${LIBXMP_SRC_COMMON})
-
-if(MSVC)
-    list(APPEND LIBXMP_DEFINES -Dinline=__inline -D_USE_MATH_DEFINES -DPATH_MAX=260)
-endif()
-
-set(XMP_INSTALLS)
-
-# ============= LITE =============
-set(LIBXMP_LITE_DEFINES
+list(APPEND LIBXMP_DEFINES_PUBLIC
     -DLIBXMP_CORE_PLAYER
     -DLIBXMP_NO_PROWIZARD
     -DLIBXMP_NO_DEPACKERS
 )
 
+if(LIBXMP_DISABLE_IT)
+    list(APPEND LIBXMP_DEFINES_PUBLIC -DLIBXMP_CORE_DISABLE_IT)
+endif()
+
+if(MSVC)
+    list(APPEND LIBXMP_DEFINES -Dinline=__inline -D_USE_MATH_DEFINES -DPATH_MAX=260)
+endif()
+
+
+list(APPEND LIBXMP_SRC_LITE ${LIBXMP_SRC_LIST_LITE} ${LIBXMP_SRC_COMMON})
+
+
+set(XMP_INSTALLS)
+
+# ============= LITE =============
 if(BUILD_STATIC)
     add_library(xmp_lite_static STATIC ${LIBXMP_SRC_LITE})
     list(APPEND XMP_INSTALLS xmp_lite_static)
@@ -59,8 +62,8 @@ if(BUILD_STATIC)
         set_target_properties(xmp_lite_static PROPERTIES OUTPUT_NAME xmp-lite)
     endif()
 
-    target_compile_definitions(xmp_lite_static PRIVATE ${LIBXMP_DEFINES} ${LIBXMP_LITE_DEFINES})
-    target_compile_definitions(xmp_lite_static PUBLIC -DBUILDING_STATIC)
+    target_compile_definitions(xmp_lite_static PRIVATE ${LIBXMP_DEFINES} -DBUILDING_STATIC)
+    target_compile_definitions(xmp_lite_static PUBLIC ${LIBXMP_DEFINES_PUBLIC})
 
     if(LIBXMP_PIC)
         target_compile_options(xmp_lite_static PRIVATE -fPIC)
@@ -82,7 +85,8 @@ if(BUILD_SHARED)
         target_link_libraries(xmp_lite_shared PUBLIC m)
     endif()
 
-    target_compile_definitions(xmp_lite_shared PRIVATE ${LIBXMP_DEFINES} ${LIBXMP_LITE_DEFINES} -DBUILDING_DLL)
+    target_compile_definitions(xmp_lite_shared PRIVATE ${LIBXMP_DEFINES} -DBUILDING_DLL)
+    target_compile_definitions(xmp_lite_shared PUBLIC ${LIBXMP_DEFINES_PUBLIC})
 
     target_include_directories(xmp_lite_shared PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/libxmp-lite)
     target_include_directories(xmp_lite_shared PRIVATE

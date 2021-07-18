@@ -30,24 +30,27 @@ include(build_src.cmake)
 
 
 set(LIBXMP_DEFINES)
+set(LIBXMP_DEFINES_PUBLIC)
 
 if(LIBXMP_DISABLE_DEPACKERS)
-    list(APPEND LIBXMP_DEFINES -DLIBXMP_NO_DEPACKERS)
+    list(APPEND LIBXMP_DEFINES_PUBLIC -DLIBXMP_NO_DEPACKERS)
 else()
     list(APPEND LIBXMP_SRC_LIST_FULL ${LIBXMP_SRC_LIST_DEPACKERS})
 endif()
 
 if(LIBXMP_DISABLE_PROWIZARD)
-    list(APPEND LIBXMP_DEFINES -DLIBXMP_NO_PROWIZARD)
+    list(APPEND LIBXMP_DEFINES_PUBLIC -DLIBXMP_NO_PROWIZARD)
 else()
     list(APPEND LIBXMP_SRC_LIST_FULL ${LIBXMP_SRC_LIST_PROWIZARD})
 endif()
 
-list(APPEND LIBXMP_SRC_FULL ${LIBXMP_SRC_LIST_LITE} ${LIBXMP_SRC_LIST_FULL} ${LIBXMP_SRC_COMMON})
-
 if(MSVC)
     list(APPEND LIBXMP_DEFINES -Dinline=__inline -D_USE_MATH_DEFINES -DPATH_MAX=260)
 endif()
+
+
+list(APPEND LIBXMP_SRC_FULL ${LIBXMP_SRC_LIST_LITE} ${LIBXMP_SRC_LIST_FULL} ${LIBXMP_SRC_COMMON})
+
 
 set(XMP_INSTALLS)
 
@@ -63,8 +66,8 @@ if(BUILD_STATIC)
         set_target_properties(xmp_static PROPERTIES OUTPUT_NAME xmp)
     endif()
 
-    target_compile_definitions(xmp_static PRIVATE ${LIBXMP_DEFINES})
-    target_compile_definitions(xmp_static PUBLIC -DBUILDING_STATIC)
+    target_compile_definitions(xmp_static PRIVATE ${LIBXMP_DEFINES} -DBUILDING_STATIC)
+    target_compile_definitions(xmp_static PUBLIC ${LIBXMP_DEFINES_PUBLIC})
 
     if(LIBXMP_PIC)
         target_compile_options(xmp_static PRIVATE -fPIC)
@@ -88,6 +91,7 @@ if(BUILD_SHARED)
     endif()
 
     target_compile_definitions(xmp_shared PRIVATE ${LIBXMP_DEFINES} -DBUILDING_DLL)
+    target_compile_definitions(xmp_shared PUBLIC ${LIBXMP_DEFINES_PUBLIC})
 
     target_include_directories(xmp_shared PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
     target_include_directories(xmp_shared PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
