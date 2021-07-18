@@ -20,7 +20,7 @@ if(XMP_WITH_DEMO_PLAYER_SDL1)
 endif()
 
 option(XMP_WITH_DEMO_PLAYER_SDL2      "Build also demo player for XMP (SDL2 needed)" OFF)
-if(XMP_WITH_DEMO_PLAYER)
+if(XMP_WITH_DEMO_PLAYER_SDL2)
     add_executable(xmpsdl2
         examples/player-sdl.c
     )

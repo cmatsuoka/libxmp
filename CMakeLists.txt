@@ -46,7 +46,7 @@ endif()
 list(APPEND LIBXMP_SRC_FULL ${LIBXMP_SRC_LIST_LITE} ${LIBXMP_SRC_LIST_FULL} ${LIBXMP_SRC_COMMON})
 
 if(MSVC)
-    list(APPEND LIBXMP_DEFINES -DDinline=__inline -D_USE_MATH_DEFINES -DPATH_MAX=260)
+    list(APPEND LIBXMP_DEFINES -Dinline=__inline -D_USE_MATH_DEFINES -DPATH_MAX=260)
 endif()
 
 set(XMP_INSTALLS)
@@ -63,7 +63,8 @@ if(BUILD_STATIC)
         set_target_properties(xmp_static PROPERTIES OUTPUT_NAME xmp)
     endif()
 
-    target_compile_definitions(xmp_static PRIVATE ${LIBXMP_DEFINES} -DBUILDING_STATIC)
+    target_compile_definitions(xmp_static PRIVATE ${LIBXMP_DEFINES})
+    target_compile_definitions(xmp_static PUBLIC -DBUILDING_STATIC)
 
     if(LIBXMP_PIC)
         target_compile_options(xmp_static PRIVATE -fPIC)

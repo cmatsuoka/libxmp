@@ -16,8 +16,5 @@ endif()
 target_compile_definitions(libxmp-test PRIVATE -DLIBXMP_NO_DEPACKERS)
 
 target_link_libraries(libxmp-test XMP_IF)
-if(WIN32)
-    target_link_libraries(libxmp-test XMP_IF)
-endif()
 
 add_test(NAME libxmp-test COMMAND libxmp-test WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}")

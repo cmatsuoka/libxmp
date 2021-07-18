@@ -88,7 +88,7 @@ if("${CMAKE_C_COMPILER_ID}" MATCHES "^(Apple)?Clang$")
 endif()
 
 if(MSVC)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /wd4244 /wd4018 /wd4996 /wd4048 /wd4267")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /wd4244 /wd4018 /wd4996 /wd4048 /wd4267 /wd4127")
     # set(CMAKE_LINK_LIBRARY_FLAG "${CMAKE_LINK_LIBRARY_FLAG} /wd4273")
 elseif(NOT "${CMAKE_C_COMPILER_ID}" MATCHES "^(Apple)?Clang$")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-but-set-variable -Wno-stringop-truncation")
