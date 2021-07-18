@@ -1,8 +1,10 @@
 #ifdef WIN32
 #include <process.h> /* _spawnl, _P_WAIT */
 #ifdef _MSC_VER
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
 #include <windows.h>
-#include <debugapi.h>
 #include <crtdbg.h>
 #endif
 #elif !defined(__riscos__) && !defined(NO_FORK_TEST)
