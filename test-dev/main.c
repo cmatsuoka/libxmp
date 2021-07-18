@@ -6,6 +6,8 @@
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
+#undef _WIN32_WINNT
+#define _WIN32_WINNT 0x0400
 #include <windows.h>
 #include <crtdbg.h>
 #endif
@@ -148,6 +150,12 @@ int run_test(int num)
 
 int main(int argc, char **argv)
 {
+#ifndef  FORK_TEST
+	int i;
+	char cmd[512];
+	int total = 0, fail = 0;
+#endif
+
 #ifdef _MSC_VER
 	if (!IsDebuggerPresent()) {
 		_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG);
@@ -168,10 +176,6 @@ int main(int argc, char **argv)
 	}
 
 #else
-	int i;
-	char cmd[512];
-	int total = 0, fail = 0;
-
 	/* Run specific tests */
 	if (argc > 1) {
 		int res = run_test(strtoul(argv[1], NULL, 0));
