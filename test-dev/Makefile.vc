@@ -1,7 +1,7 @@
 CC	= cl
 CFLAGS	= /O2 /W3 /MD /I..\include /I..\src /DWIN32 \
 	  /Dinline=__inline /DPATH_MAX=1024 /D_USE_MATH_DEFINES /D_CRT_SECURE_NO_WARNINGS
-LDFLAGS = /RELEASE /OUT:$(EXE)
+LDFLAGS = /Lkernel32.lib /RELEASE /OUT:$(EXE)
 EXE	= libxmp-tests.exe
 
 TEST_SOURCES	= util.c main.c simple_module.c compare_mixer_data.c
