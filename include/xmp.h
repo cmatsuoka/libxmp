@@ -16,12 +16,11 @@ extern "C" {
 #define XMP_VER_RELEASE 0
 
 #if defined(_WIN32) && !defined(__CYGWIN__)
-# if defined(BUILDING_STATIC)
-#  define LIBXMP_EXPORT
-# elif defined(BUILDING_DLL)
+# if defined(BUILDING_DLL)
 #  define LIBXMP_EXPORT __declspec(dllexport)
 # else
-#  define LIBXMP_EXPORT __declspec(dllimport)
+#  define LIBXMP_EXPORT
+#  define LIBXMP_EXPORT_VAR __declspec(dllimport)
 # endif
 #elif defined(__OS2__) && defined(__WATCOMC__) && defined(__SW_BD)
 #  define LIBXMP_EXPORT __declspec(dllexport)
@@ -335,6 +334,9 @@ typedef char *xmp_context;
 
 LIBXMP_EXPORT_VAR extern const char *xmp_version;
 LIBXMP_EXPORT_VAR extern const unsigned int xmp_vercode;
+
+LIBXMP_EXPORT const char *xmp_get_version     (void);
+LIBXMP_EXPORT const unsigned int xmp_get_vercode (void);
 
 LIBXMP_EXPORT int         xmp_syserrno        (void);
 
